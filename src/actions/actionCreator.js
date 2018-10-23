@@ -1,24 +1,20 @@
-import { ADD_TODO, REMOVE_TODO, TOGGLE_TODO, SET_VISIBILITY_FILTER } from './actionsTypes'
+import {ADD_NOTE, DELETE_NOTE, MARK_AS_DONE} from "./actionsTypes";
 
-let TodoId = 2
+let noteIndex = 0;
+export const addNote = (noteText, noteDeadlineDay) => ({
+    type:ADD_NOTE,
+    id: noteIndex ++,
+    noteText : noteText,
+    noteDeadlineDay: noteDeadlineDay,
+    isDone:false
+});
 
-export const addTodo = text => ({
-    type: ADD_TODO,
-    id: TodoId++,
-    text
-})
+export const deleteNote = id => ({
+    type: DELETE_NOTE,
+    id:id
+});
 
-export const deleteTodo = (id) => ({
-    type: REMOVE_TODO,
-    id: id
-})
-
-export const toggleTodo = (id) => ({
-    type: TOGGLE_TODO,
-    id: id
-})
-
-export const setVisibilityFilter = filter => ({
-  type: SET_VISIBILITY_FILTER,
-  filter
-})
+export const markAsDone = id => ({
+   type:MARK_AS_DONE,
+   id:id
+});
