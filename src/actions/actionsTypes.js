@@ -1,3 +1,4 @@
 export const ADD_NOTE = "ADD_NOTE";
 export const DELETE_NOTE = "DELETE_NOTE";
 export const MARK_AS_DONE = "MARK_AS_DONE";
+export const UPDATE_NOTE_STATE_ON_EDITING = "UPDATE_NOTE_STATE_ON_EDITING";

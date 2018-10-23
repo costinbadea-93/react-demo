@@ -3,7 +3,17 @@ import {connect} from 'react-redux'
 import {deleteNote, markAsDone} from "../actions/actionCreator";
 import {bindActionCreators} from "redux";
 
+let noteText;
+let noteDeadline;
 class NotesListComponent extends Component {
+    constructor(props){
+        super(props)
+        this.updateTodoState = this.updateTodoState.bind(this);
+    }
+
+    updateTodoState(id, input) {
+        console.log(id, input);
+    }
 
     render() {
         return (
@@ -11,16 +21,21 @@ class NotesListComponent extends Component {
                 {this.props.notes.map(
                     note => (<div className="col-sm-12" key={note.id}>
                         <div className="row">
-                            <div className="col-sm-2" style={{
+                            <input type="text" onChange={(e)=> this.updateTodoState(note.id, e)} className="col-sm-2" style={{
                                 textDecoration: note.isDone ? "line-through" : "none",
-                            }}>
-                                <h5>{note.noteText}</h5>
-                            </div>
-                            <div className="col-sm-3" style={{
+                            }} value={note.noteText} disabled={true} ref={(e)=>noteText = e}>
+                                {/*<h5>{note.noteText}</h5>*/}
+                            </input>
+                            <input className="col-sm-2" style={{
                                 textDecoration: note.isDone ? "line-through" : "none",
-                            }}>
-                                <h5>{note.noteDeadlineDay}</h5>
-                            </div>
+                            }} value={note.noteDeadlineDay} disabled={true} ref={(e)=>noteDeadline = e}>
+                                {/*<h5>{note.noteDeadlineDay}</h5>*/}
+                            </input>
+                            <div className="col-sm-1 spacer"></div>
+                            <button className="btn btn-success pull-left"
+                                    onClick={()=> {noteText.disabled=!noteText.disabled; noteDeadline.disabled=!noteDeadline.disabled}}>Update note
+                            </button>
+                            <div className="col-sm-1 spacer"></div>
                             <button className="btn btn-warning pull-left"
                                     onClick={() => this.props.deleteNote(note.id)}>Delete Note
                             </button>
