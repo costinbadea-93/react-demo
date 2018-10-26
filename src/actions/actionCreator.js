@@ -1,27 +1,32 @@
-import {ADD_NOTE, DELETE_NOTE, MARK_AS_DONE, UPDATE_NOTE_STATE_ON_EDITING} from "./actionsTypes";
+import {ADD_NOTE, DELETE_NOTE, MARK_AS_DONE, UPDATE_NOTE_STATE_ON_EDITING, ADD_MULTIPLE_NOTES} from "./actionsTypes";
 
 let noteIndex = 0;
-export const addNote = (noteText, noteDeadlineDay) => ({
-    type:ADD_NOTE,
-    id: noteIndex ++,
-    noteText : noteText,
-    noteDeadlineDay: noteDeadlineDay,
-    isDone:false
+export const addNote = (note) => ({
+    type: ADD_NOTE,
+    id: note.id,
+    noteText: note.noteText,
+    noteDeadlineDay: note.noteDeadlineDay,
+    isDone: false
 });
 
 export const deleteNote = id => ({
     type: DELETE_NOTE,
-    id:id
+    id: id
 });
 
 export const markAsDone = id => ({
-   type:MARK_AS_DONE,
-   id:id
+    type: MARK_AS_DONE,
+    id: id
 });
 
-export const updateNoteOnEditing = (id, newText, newDeadline) => ({
+export const addMultipleNotes = notesArray => ({
+    type: ADD_MULTIPLE_NOTES,
+    notesArray: notesArray
+});
+
+export const updateNoteOnEditing = (value, inputType,id) => ({
+    type: UPDATE_NOTE_STATE_ON_EDITING,
     id:id,
-    type:UPDATE_NOTE_STATE_ON_EDITING,
-    noteText: newText,
-    noteDeadlineDay: newDeadline
+    value: value,
+    inputType: inputType
 });

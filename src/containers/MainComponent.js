@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {addNote,deleteNote} from "../actions/actionCreator";
 import NotesListComponent from "./NotesListComponent";
+import {fc} from "../utils/utils";
 
 class MainComponent extends Component {
 
@@ -23,7 +24,14 @@ class MainComponent extends Component {
 
     addNoteToState() {
         if(this.state.noteText && this.state.noteDeadlineDay) {
-            this.props.addNote(this.state.noteText, this.state.noteDeadlineDay);
+            let note = {
+                id:null,
+                noteText: this.state.noteText,
+                noteDeadlineDay: this.state.noteDeadlineDay
+            };
+            fc.makeRequest("POST","http://localhost:8181/note/addNote", note).then(resp => {
+                this.props.addNote(JSON.parse(resp));
+            });
         } else {
             alert("complete all fields");
         }
