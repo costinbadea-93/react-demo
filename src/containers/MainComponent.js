@@ -1,9 +1,10 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {addNote,deleteNote} from "../actions/actionCreator";
+import {addNote,deleteNote,createError} from "../actions/actionCreator";
 import NotesListComponent from "./NotesListComponent";
 import {fc} from "../utils/utils";
+import GeneralErrorComponent from "./GeneralErrorComponent";
 
 class MainComponent extends Component {
 
@@ -33,7 +34,7 @@ class MainComponent extends Component {
                 this.props.addNote(JSON.parse(resp));
             });
         } else {
-            alert("complete all fields");
+            this.props.createError("Please complete all the data fields")
         }
     }
 
@@ -54,6 +55,7 @@ class MainComponent extends Component {
                     <div className="col-sm-6">
                         <button className="btn btn-primary" onClick={() => this.addNoteToState()}>Add Note</button>
                     </div><br/>
+                    <GeneralErrorComponent error = {this.props.error}/>
                     <NotesListComponent/>
                 </div>
             </div>
@@ -61,11 +63,18 @@ class MainComponent extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        error: state.errorHandlerReducer
+    }
+};
+
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({
         addNote,
-        deleteNote
+        deleteNote,
+        createError
     },dispatch)
 }
 
-export default connect(null,mapDispatchToProps)(MainComponent)
+export default connect(mapStateToProps,mapDispatchToProps)(MainComponent)

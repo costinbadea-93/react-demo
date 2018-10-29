@@ -1,21 +1,16 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux'
-import {addMultipleNotes, deleteNote, markAsDone, updateNoteOnEditing} from "../actions/actionCreator";
+import {addMultipleNotes, deleteNote, markAsDone, updateNoteOnEditing, showUpdateNote, updateNoteResponse} from "../actions/actionCreator";
 import {bindActionCreators} from "redux";
 import {fc} from "../utils/utils";
-
-let noteText;
-let noteDeadline;
 
 class NotesListComponent extends Component {
     constructor(props) {
         super(props);
         this.deleteNote = this.deleteNote.bind(this);
-        this.updateNote = this.updateNote.bind(this);
+        this.editNote = this.editNote.bind(this);
         this.updateNoteOnChangeById = this.updateNoteOnChangeById.bind(this);
-        this.state = {
-            isUpdateShown: false
-        }
+        this.performNoteUpdate = this.performNoteUpdate.bind(this);
     }
 
     componentDidMount() {
@@ -28,15 +23,34 @@ class NotesListComponent extends Component {
             });
     }
 
-    updateNote(id) {
+    performNoteUpdate(id, noteShowUpdate, noteDone) {
+        let markAsDone = noteDone !== undefined;
         let data = {
+            id:id,
             noteText: this.refs[id].childNodes[0].value,
-            noteDeadline: this.refs[id].childNodes[1].value
+            noteDeadlineDay: this.refs[id].childNodes[1].value,
+            showUpdate: noteShowUpdate,
         };
-      this.refs[id].childNodes.forEach(inputItem => inputItem.disabled = !inputItem.disabled);
+
+        if(markAsDone) {
+            data.noteDone = noteDone;
+            this.props.markAsDone(id);
+        }else {
+            this.props.showUpdateNote(id);
+            this.refs[id].childNodes.forEach(inputItem => inputItem.disabled = !inputItem.disabled);
+        }
+
+        fc.makeRequest("POST","http://localhost:8181/note/addNote", data).then(resp => {
+            this.props.updateNoteResponse(JSON.parse(resp));
+        });
     }
 
-    updateNoteOnChangeById(value, inputType,id) {
+    editNote(id) {
+        this.props.showUpdateNote(id);
+        this.refs[id].childNodes.forEach(inputItem => inputItem.disabled = !inputItem.disabled);
+    }
+
+    updateNoteOnChangeById(value, inputType, id) {
         this.props.updateNoteOnEditing(value, inputType, id);
 
     }
@@ -53,23 +67,33 @@ class NotesListComponent extends Component {
                 {this.props.notes.map(
                     note => (<div className="col-sm-12" key={note.id}>
                         <div className="row">
-                            <div  ref={note.id}>
-                                <input type="text" onChange={(e) => this.updateNoteOnChangeById(e.target.value,"TEXT", note.id)}
+                            <div ref={note.id}>
+                                <input type="text"
+                                       onChange={(e) => this.updateNoteOnChangeById(e.target.value, "TEXT", note.id)}
                                        className="col-sm-4" style={{
-                                    textDecoration: note.isDone ? "line-through" : "none",
+                                    textDecoration: note.noteDone ? "line-through" : "none",
                                 }} value={note.noteText} disabled={true}>
-                                    {/*<h5>{note.noteText}</h5>*/}
                                 </input>
-                                <input className="col-sm-3" style={{
-                                    textDecoration: note.isDone ? "line-through" : "none",
+                                <input type="text"
+                                       onChange={(e) => this.updateNoteOnChangeById(e.target.value, "DEADLINE", note.id)}
+                                       className="col-sm-3" style={{
+                                    textDecoration: note.noteDone ? "line-through" : "none",
                                 }} value={note.noteDeadlineDay} disabled={true}>
-                                    {/*<h5>{note.noteDeadlineDay}</h5>*/}
                                 </input>
                             </div>
                             <div className="col-sm-1 spacer"></div>
-                            <button className="btn btn-success pull-left"
+                            <button style={{
+                                display: note.showUpdate ? "inline-block" : "none"
+                            }} className="btn btn-success pull-left"
                                     onClick={() => {
-                                        this.updateNote(note.id)
+                                        this.editNote(note.id);
+                                    }}>Edit Note
+                            </button>
+                            <button style={{
+                                display: note.showUpdate ? "none" : "inline-block"
+                            }} className="btn btn-success pull-left"
+                                    onClick={() => {
+                                        this.performNoteUpdate(note.id, !note.showUpdate);
                                     }}>Update note
                             </button>
                             <div className="col-sm-1 spacer"></div>
@@ -78,7 +102,7 @@ class NotesListComponent extends Component {
                             </button>
                             <div className="col-sm-1 spacer"></div>
                             <button className="btn btn-primary pull-left"
-                                    onClick={() => this.props.markAsDone(note.id)}>Mark as done
+                                    onClick={() => this.performNoteUpdate(note.id, note.showUpdate, !note.noteDone)}>Mark as done
                             </button>
                         </div>
                         <br/>
@@ -101,7 +125,9 @@ const mapPropsToDispatch = (dispatch) => {
         deleteNote,
         markAsDone,
         addMultipleNotes,
-        updateNoteOnEditing
+        updateNoteOnEditing,
+        showUpdateNote,
+        updateNoteResponse
     }, dispatch)
 };
 

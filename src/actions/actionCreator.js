@@ -1,4 +1,6 @@
-import {ADD_NOTE, DELETE_NOTE, MARK_AS_DONE, UPDATE_NOTE_STATE_ON_EDITING, ADD_MULTIPLE_NOTES} from "./actionsTypes";
+import {ADD_NOTE, DELETE_NOTE, MARK_AS_DONE,
+    UPDATE_NOTE_STATE_ON_EDITING, ADD_MULTIPLE_NOTES,
+    SET_SHOW_UPDATE_NOTE, UPDATE_NOTE_RESPONSE,CREATE_ERROR} from "./actionsTypes";
 
 let noteIndex = 0;
 export const addNote = (note) => ({
@@ -6,7 +8,7 @@ export const addNote = (note) => ({
     id: note.id,
     noteText: note.noteText,
     noteDeadlineDay: note.noteDeadlineDay,
-    isDone: false
+    noteDone: false
 });
 
 export const deleteNote = id => ({
@@ -30,3 +32,18 @@ export const updateNoteOnEditing = (value, inputType,id) => ({
     value: value,
     inputType: inputType
 });
+
+export const updateNoteResponse = (note) => ({
+    type: UPDATE_NOTE_RESPONSE,
+    note: note
+});
+
+export const showUpdateNote = (id) =>({
+   id:id,
+   type: SET_SHOW_UPDATE_NOTE
+});
+
+export const createError = error => ({
+    error: error,
+    type:CREATE_ERROR
+})
