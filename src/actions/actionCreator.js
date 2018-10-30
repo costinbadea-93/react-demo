@@ -1,6 +1,14 @@
-import {ADD_NOTE, DELETE_NOTE, MARK_AS_DONE,
-    UPDATE_NOTE_STATE_ON_EDITING, ADD_MULTIPLE_NOTES,
-    SET_SHOW_UPDATE_NOTE, UPDATE_NOTE_RESPONSE,CREATE_ERROR} from "./actionsTypes";
+import {
+    ADD_NOTE,
+    DELETE_NOTE,
+    MARK_AS_DONE,
+    UPDATE_NOTE_STATE_ON_EDITING,
+    ADD_MULTIPLE_NOTES,
+    SET_SHOW_UPDATE_NOTE,
+    UPDATE_NOTE_RESPONSE,
+    CREATE_ERROR,
+    DISMISS_ERROR
+} from "./actionsTypes";
 
 let noteIndex = 0;
 export const addNote = (note) => ({
@@ -26,9 +34,9 @@ export const addMultipleNotes = notesArray => ({
     notesArray: notesArray
 });
 
-export const updateNoteOnEditing = (value, inputType,id) => ({
+export const updateNoteOnEditing = (value, inputType, id) => ({
     type: UPDATE_NOTE_STATE_ON_EDITING,
-    id:id,
+    id: id,
     value: value,
     inputType: inputType
 });
@@ -38,12 +46,16 @@ export const updateNoteResponse = (note) => ({
     note: note
 });
 
-export const showUpdateNote = (id) =>({
-   id:id,
-   type: SET_SHOW_UPDATE_NOTE
+export const showUpdateNote = (id) => ({
+    id: id,
+    type: SET_SHOW_UPDATE_NOTE
 });
 
 export const createError = error => ({
     error: error,
-    type:CREATE_ERROR
-})
+    type: CREATE_ERROR
+});
+
+export const dismissError = () => ({
+   type : DISMISS_ERROR
+});
